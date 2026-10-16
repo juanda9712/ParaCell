@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParaCell | Tienda Oficial</title>
+    
+    <!-- Favicon (Icono de la pestaña) -->
+    <link rel="icon" type="image/png" href="assets/img/ParaCell.png">
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb', /* Tu color azul mantenido */
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-white text-gray-900 font-sans antialiased">
+
+    <!-- TOP BAR MINIMALISTA -->
+    <div class="bg-brand-900 text-white text-[11px] md:text-xs font-medium py-2 text-center uppercase tracking-widest">
+        Paraguay — Consulta disponibilidad y entregas
+    </div>
+
+    <!-- NAVBAR TIPO SHOPIFY (Glassmorphism) -->
+    <nav class="bg-white/80 backdrop-blur-lg border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center">
+                    <a href="#">
+                        <!-- Reemplaza el src con la ruta real de tu logo -->
+                        <!-- La clase h-16 controla la altura (64px). Puedes cambiar a h-20 (80px) si lo quieres más grande -->
+                        <img src="assets/img/ParaCell.png" alt="ParaCell Logo" class="h-20 w-auto object-contain">
+                    </a>
+                </div>
+
+                <!-- Enlaces Centrales -->
+                <div class="hidden lg:flex flex-1 items-center justify-center space-x-8">
+                    <a href="#" class="text-sm font-medium text-gray-900 hover:text-brand-600 transition-colors">Inicio</a>
+                    <a href="#catalogo" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Celulares</a>
+                    <a href="#catalogo" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Accesorios</a>
+                    <a href="#catalogo" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Informática</a>
+                    <a href="#reparaciones" class="text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors">Reparaciones</a>
+                </div>
+
+                <!-- Buscador e Iconos -->
+                <div class="hidden md:flex items-center gap-4">
+                    <!-- Buscador Moderno -->
+                    <div class="relative group">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 group-focus-within:text-brand-600 transition-colors"></i>
+                        <input type="text" id="input-buscador" placeholder="Buscar productos..." class="bg-gray-50 border border-gray-200 text-sm rounded-lg pl-10 pr-4 py-2 w-64 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all">
+                    </div>
+                    
+                    <div class="w-px h-6 bg-gray-200 mx-2"></div>
+                    
+                    <!-- Admin Icon -->
+                    <a href="admin.html" class="text-gray-400 hover:text-brand-600 transition-colors" title="Acceso Administrador">
+                        <i class="fa-regular fa-user text-lg"></i>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="btn-mobile-menu" class="lg:hidden text-gray-900 focus:outline-none">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Menú Móvil (Oculto por defecto) -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full left-0 top-full shadow-lg">
+            <div class="px-4 pt-2 pb-6 space-y-2">
+                <a href="#" class="mobile-link block px-3 py-3 text-base font-medium text-gray-900 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors">Inicio</a>
+                <a href="#catalogo" class="mobile-link block px-3 py-3 text-base font-medium text-gray-600 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors">Celulares</a>
+                <a href="#catalogo" class="mobile-link block px-3 py-3 text-base font-medium text-gray-600 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors">Accesorios</a>
+                <a href="#catalogo" class="mobile-link block px-3 py-3 text-base font-medium text-gray-600 hover:bg-brand-50 hover:text-brand-600 rounded-lg transition-colors">Informática</a>
+                <a href="#reparaciones" class="mobile-link block px-3 py-3 text-base font-medium text-brand-600 hover:bg-brand-50 rounded-lg transition-colors bg-brand-50/50 mt-2"><i class="fa-solid fa-wrench mr-2"></i> Servicio Técnico</a>
+                
+                <!-- Botón de Admin en móvil -->
+                <a href="admin.html" class="block px-3 py-3 text-base font-medium text-gray-500 hover:bg-gray-50 rounded-lg transition-colors mt-4 border-t border-gray-100">
+                    <i class="fa-regular fa-user mr-2"></i> Acceso Administrador
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION MODERNA -->
+    <header class="relative bg-white overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+                
+                <!-- Textos Hero -->
+                <div class="max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-600 text-sm font-medium mb-6 border border-brand-100">
+                        <span class="relative flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                        </span>
+                        Nuevos ingresos disponibles
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-900 tracking-tight mb-6 leading-[1.1]">
+                        La tecnología <br>
+                        <span class="text-brand-600">que va con vos.</span>
+                    </h1>
+                    
+                    <p class="text-lg text-gray-500 mb-8 leading-relaxed max-w-lg">
+                        Encontrá tu próximo smartphone, accesorios y equipos de informática al mejor precio. ¿Tu celular necesita servicio? Solicitá un presupuesto en línea de forma rápida y segura.
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#" class="inline-flex justify-center items-center bg-brand-600 hover:bg-brand-700 text-white font-semibold py-3.5 px-8 rounded-xl transition-all shadow-sm hover:shadow-md">
+                            Ver catálogo completo
+                        </a>
+                        <a href="#" class="inline-flex justify-center items-center bg-white text-gray-900 border border-gray-200 hover:border-gray-300 hover:bg-gray-50 font-semibold py-3.5 px-8 rounded-xl transition-all">
+                            Servicio Técnico
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Imagen Hero Moderna -->
+                <div class="relative lg:ml-auto">
+                    <!-- Cuadro decorativo de fondo -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-brand-100 to-white rounded-3xl transform rotate-3 scale-105 -z-10"></div>
+                    
+                    <!-- Imagen principal (Mockup limpio) -->
+                    <img src="https://images.unsplash.com/photo-1616348436168-de43ad0db179?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                         alt="iPhone y accesorios" 
+                         class="w-full rounded-3xl shadow-2xl border border-gray-100 object-cover aspect-[4/3]">
+                         
+                    <!-- Tarjeta flotante decorativa tipo E-commerce -->
+                    <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 flex items-center gap-4 animate-bounce" style="animation-duration: 3s;">
+                        <div class="bg-green-100 p-3 rounded-full text-green-600">
+                            <i class="fa-solid fa-shield-check text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-gray-900">Garantía Oficial</p>
+                            <p class="text-xs text-gray-500">En todos los equipos</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+    <!-- SECCIÓN DE BENEFICIOS (Features) -->
+    <section class="bg-gray-50 border-y border-gray-100 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                
+                <!-- Beneficio 1: Entrega -->
+                <div class="flex items-center gap-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div class="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-brand-50 text-brand-600">
+                        <i class="fa-solid fa-truck-fast text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900">Entrega coordinada</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Consultá cobertura</p>
+                    </div>
+                </div>
+
+                <!-- Beneficio 2: Atención -->
+                <div class="flex items-center gap-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div class="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-brand-50 text-brand-600">
+                        <i class="fa-solid fa-headset text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900">Atención directa</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Te asesoramos</p>
+                    </div>
+                </div>
+
+                <!-- Beneficio 3: Servicio Técnico -->
+                <div class="flex items-center gap-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div class="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-brand-50 text-brand-600">
+                        <i class="fa-solid fa-screwdriver-wrench text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900">Servicio técnico</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Solicitá presupuesto</p>
+                    </div>
+                </div>
+
+                <!-- Beneficio 4: Variedad -->
+                <div class="flex items-center gap-4 bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div class="flex-shrink-0 flex items-center justify-center w-12 h-12 rounded-full bg-brand-50 text-brand-600">
+                        <i class="fa-solid fa-mobile-screen-button text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-gray-900">Celulares e informática</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Todo en un mismo lugar</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- SECCIÓN DE CATÁLOGO DE PRODUCTOS -->
+    <section class="py-16 bg-white" id="catalogo">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Título de sección (Opcional pero recomendado) -->
+            <h2 class="text-2xl font-extrabold text-gray-900 mb-8">Nuestros Productos</h2>
+
+            <!-- Controles: Categorías y Ordenar -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+                
+                <!-- Categorías (Izquierda) -->
+                <div id="filtros-categoria" class="flex overflow-x-auto pb-2 md:pb-0 w-full md:w-auto gap-3 scrollbar-hide" style="scrollbar-width: none;">
+                    <button data-categoria="Todos" class="btn-filtro whitespace-nowrap px-5 py-2.5 rounded-full bg-brand-900 text-white text-sm font-medium transition-colors shadow-sm">Todos</button>
+                    <button data-categoria="Celulares" class="btn-filtro whitespace-nowrap px-5 py-2.5 rounded-full bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors">Celulares</button>
+                    <button data-categoria="Accesorios" class="btn-filtro whitespace-nowrap px-5 py-2.5 rounded-full bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors">Accesorios</button>
+                    <button data-categoria="Informática" class="btn-filtro whitespace-nowrap px-5 py-2.5 rounded-full bg-gray-50 border border-gray-200 text-gray-700 hover:bg-gray-100 text-sm font-medium transition-colors">Informática</button>
+                    <button data-categoria="Ofertas" class="btn-filtro whitespace-nowrap px-5 py-2.5 rounded-full bg-red-50 border border-red-100 text-red-600 hover:bg-red-100 text-sm font-medium transition-colors">
+                        <i class="fa-solid fa-fire mr-1"></i> Ofertas
+                    </button>
+                </div>
+
+                <!-- Ordenar por (Derecha) -->
+                <div class="flex items-center gap-3 shrink-0 w-full md:w-auto justify-end">
+                    <label for="sort" class="hidden sm:block text-sm text-gray-500 font-medium">Ordenar por:</label>
+                    <div class="relative w-full sm:w-auto">
+                        <select id="sort" class="appearance-none bg-gray-50 border border-gray-200 text-gray-900 text-sm font-medium rounded-xl focus:ring-brand-500 focus:border-brand-500 block w-full sm:w-48 p-2.5 pr-8 cursor-pointer outline-none transition-colors">
+                            <option value="destacados">Destacados</option>
+                            <option value="precio-menor">Precio: Menor a Mayor</option>
+                            <option value="precio-mayor">Precio: Mayor a Menor</option>
+                            <option value="a-z">Nombre: A - Z</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grilla de Productos -->
+            <!-- En celulares: 1 columna, Tablets: 2 o 3 columnas, PC: 4 columnas -->
+            <!-- Le agregamos el id="catalogo-productos" -->
+            <div id="catalogo-productos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                
+                <!-- Mensaje temporal de carga -->
+                <div class="col-span-full text-center py-10">
+                    <i class="fa-solid fa-spinner fa-spin text-brand-500 text-2xl mb-3"></i>
+                    <p class="text-gray-500">Cargando catálogo desde la nube...</p>
+                </div>
+
+            </div>
+            
+            <!-- Botón Cargar Más -->
+            <div class="mt-14 text-center">
+                <button class="bg-white border border-gray-200 text-gray-900 hover:border-brand-600 hover:text-brand-600 font-semibold py-3 px-8 rounded-xl transition-all text-sm shadow-sm">
+                    Cargar más productos
+                </button>
+            </div>
+
+        </div>
+    </section>
+    <!-- SECCIÓN DE SERVICIO TÉCNICO Y FORMULARIO -->
+    <section class="py-16 lg:py-24 bg-brand-50 border-t border-brand-100" id="reparaciones">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+                
+                <!-- Columna Izquierda: Información -->
+                <div class="max-w-lg">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-sm font-medium mb-6">
+                        <i class="fa-solid fa-wrench"></i> Servicio Técnico Especializado
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 tracking-tight">
+                        ¿Necesitás reparar tu celular?
+                    </h2>
+                    <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                        Contanos qué le pasa a tu equipo y adjuntá hasta tres fotos. Revisaremos la solicitud para coordinar diagnóstico y presupuesto.
+                    </p>
+                    
+                    <!-- Puntos informativos -->
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 mt-1 text-brand-600">
+                                <i class="fa-solid fa-circle-info text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-gray-900">Importante</h4>
+                                <p class="text-sm text-gray-600 mt-1">El envío de este formulario no confirma un precio ni una reparación. El presupuesto definitivo se prepara después de revisar la información y/o el equipo físicamente.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 mt-1 text-brand-600">
+                                <i class="fa-solid fa-shield-halved text-xl"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-base font-bold text-gray-900">Garantía de servicio</h4>
+                                <p class="text-sm text-gray-600 mt-1">Trabajamos con repuestos de alta calidad y técnicos capacitados para devolverle la vida a tu dispositivo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Formulario -->
+                <div class="bg-white rounded-3xl shadow-xl shadow-brand-100/50 p-6 sm:p-8 border border-gray-100">
+                    <form id="form-reparacion" class="space-y-5">
+                        
+                        <!-- Nombre y WhatsApp (2 columnas en móviles grandes) -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label for="nombre" class="block text-sm font-medium text-gray-700 mb-1.5">Nombre completo</label>
+                                <input type="text" id="nombre" required class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all" placeholder="Ej: Juan Pérez">
+                            </div>
+                            <div>
+                                <label for="whatsapp" class="block text-sm font-medium text-gray-700 mb-1.5">WhatsApp de contacto</label>
+                                <input type="tel" id="whatsapp" required class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all" placeholder="Ej: 0981 123 456">
+                            </div>
+                        </div>
+
+                        <!-- Marca y Modelo -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label for="marca" class="block text-sm font-medium text-gray-700 mb-1.5">Marca</label>
+                                <input type="text" id="marca" required class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all" placeholder="Ej: Apple, Samsung">
+                            </div>
+                            <div>
+                                <label for="modelo" class="block text-sm font-medium text-gray-700 mb-1.5">Modelo</label>
+                                <input type="text" id="modelo" required class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all" placeholder="Ej: iPhone 13 Pro">
+                            </div>
+                        </div>
+
+                        <!-- Problema (Select) -->
+                        <div>
+                            <label for="problema" class="block text-sm font-medium text-gray-700 mb-1.5">Problema del equipo</label>
+                            <div class="relative">
+                                <select id="problema" required class="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all cursor-pointer">
+                                    <option value="" disabled selected>Seleccioná el problema principal</option>
+                                    <option value="Pantalla rota o táctil">Pantalla rota o táctil</option>
+                                    <option value="Batería o carga">Batería o carga</option>
+                                    <option value="No enciende">No enciende</option>
+                                    <option value="Cámara">Cámara</option>
+                                    <option value="Audio o micrófono">Audio o micrófono</option>
+                                    <option value="Daño por líquido">Daño por líquido</option>
+                                    <option value="Software / sistema">Software / sistema</option>
+                                    <option value="Otro problema">Otro problema</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Descripción Opcional -->
+                        <div>
+                            <label for="descripcion" class="block text-sm font-medium text-gray-700 mb-1.5">Descripción (Opcional)</label>
+                            <textarea id="descripcion" rows="3" class="w-full bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-all resize-none" placeholder="Danos más detalles sobre cómo ocurrió el daño..."></textarea>
+                        </div>
+
+                        <!-- Subida de Fotos -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">Fotos del equipo (Hasta 3 imágenes)</label>
+                            <!-- Área de Drag & Drop falsa visualmente (Luego JS le dará funcionalidad) -->
+                            <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-brand-500 hover:bg-brand-50 transition-colors cursor-pointer group relative">
+                                <div class="space-y-1 text-center">
+                                    <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 group-hover:text-brand-500 mb-2"></i>
+                                    <div class="flex text-sm text-gray-600 justify-center">
+                                        <label for="fotos" class="relative cursor-pointer bg-transparent rounded-md font-medium text-brand-600 hover:text-brand-500 focus-within:outline-none">
+                                            <span>Subir fotos</span>
+                                            <input id="fotos" name="fotos" type="file" class="sr-only" multiple accept="image/*" max="3">
+                                        </label>
+                                        <p class="pl-1">o arrastralas aquí</p>
+                                    </div>
+                                    <p class="text-xs text-gray-500">PNG, JPG, GIF hasta 5MB</p>
+                                </div>
+                            </div>
+                            <!-- Contenedor para mostrar miniaturas de las fotos subidas (se manejará con JS) -->
+                            <div id="preview-fotos" class="flex gap-2 mt-3 hidden"></div>
+                        </div>
+
+                        <!-- Botón Enviar -->
+                        <div class="pt-2">
+                            <button type="submit" class="w-full flex justify-center items-center gap-2 bg-[#25D366] hover:bg-[#1ebd5a] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all">
+                                <i class="fa-brands fa-whatsapp text-xl"></i>
+                                Solicitar Presupuesto por WhatsApp
+                            </button>
+                            <p class="text-xs text-center text-gray-500 mt-3">Al enviar serás redirigido a WhatsApp de forma segura.</p>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <!-- FOOTER (Pie de página) -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+                
+                <!-- Columna 1: Marca y descripción -->
+                <div>
+                    <a href="#" class="inline-block mb-4">
+                        <!-- Logo versión clara/blanca para el footer oscuro -->
+                        <!-- Si no tienes versión blanca, usa el mismo logo -->
+                        <img src="assets/img/ParaCell.png" alt="ParaCell Logo" class="h-20 w-auto object-contain opacity-90 hover:opacity-100 transition-opacity">
+                    </a>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6 pr-4">
+                        La tecnología que va con vos. Encontrá los mejores smartphones, accesorios y un servicio técnico de confianza en un solo lugar.
+                    </p>
+                </div>
+
+                <!-- Columna 2: Accesos Rápidos -->
+                <div>
+                    <h4 class="text-lg font-bold mb-5 text-gray-100">Secciones</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors text-sm">Inicio</a></li>
+                        <li><a href="#catalogo" class="text-gray-400 hover:text-white transition-colors text-sm">Celulares</a></li>
+                        <li><a href="#catalogo" class="text-gray-400 hover:text-white transition-colors text-sm">Accesorios e Informática</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Ayuda y Contacto -->
+                <div>
+                    <h4 class="text-lg font-bold mb-5 text-gray-100">Ayuda</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="#reparaciones" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-wrench w-4"></i> Presupuesto de reparación
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2">
+                                <i class="fa-brands fa-whatsapp w-4"></i> Contacto por WhatsApp
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Línea separadora y Copyright -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-xs text-center md:text-left">
+                    © 2026 Paracell. Precios sujetos a confirmación.
+                </p>
+                <!-- Redes sociales (Opcionales, puedes cambiar los links luego) -->
+                <div class="flex gap-4">
+                    <a href="#" class="text-gray-500 hover:text-white transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-white transition-colors"><i class="fa-brands fa-facebook-f"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BOTÓN FLOTANTE WHATSAPP -->
+    <!-- Reemplaza "5959XXXXXXXX" por el número real con código de país, sin espacios ni símbolos -->
+    <a href="https://wa.me/595971517356" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 right-6 bg-[#25D366] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-lg hover:bg-[#1ebd5a] hover:scale-110 transition-all z-50 group">
+        <i class="fa-brands fa-whatsapp text-3xl"></i>
+        <!-- Tooltip que aparece al pasar el mouse (Solo visible en PC) -->
+        <span class="absolute right-16 bg-white text-gray-900 text-xs font-bold px-3 py-2 rounded-lg shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
+            ¡Chateá con nosotros!
+        </span>
+    </a>
+    <!-- Modal de Galería de Imágenes con Lupa y Miniaturas -->
+    <div id="modal-galeria" class="hidden fixed inset-0 bg-black bg-opacity-95 z-[100] flex flex-col items-center justify-center p-4 select-none">
+        <!-- Botón Cerrar -->
+        <button id="btn-cerrar-galeria" class="absolute top-4 right-4 text-white hover:text-red-500 transition-colors z-50">
+            <i class="fa-solid fa-xmark text-4xl"></i>
+        </button>
+
+        <div class="flex items-center justify-center w-full max-w-5xl relative mt-8">
+            <!-- Botón Anterior -->
+            <button id="btn-prev-img" class="text-white hover:text-brand-500 text-4xl transition-colors hidden z-50 absolute left-2 md:-left-12">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <!-- Contenedor de Imagen Principal con Lupa (Zoom interactivo) -->
+            <div id="zoom-container" class="relative w-full max-w-2xl h-[50vh] md:h-[65vh] overflow-hidden rounded-xl cursor-zoom-in flex items-center justify-center bg-gray-900 border border-gray-800">
+                <img id="img-galeria-actual" src="" alt="Vista previa ampliada" class="max-w-full max-h-full object-contain transition-transform duration-100 ease-out">
+            </div>
+
+            <!-- Botón Siguiente -->
+            <button id="btn-next-img" class="text-white hover:text-brand-500 text-4xl transition-colors hidden z-50 absolute right-2 md:-right-12">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Contenedor de Miniaturas -->
+        <div id="miniaturas-galeria" class="mt-6 flex gap-3 overflow-x-auto max-w-2xl px-2 pb-2">
+            <!-- Las miniaturas se inyectarán aquí con JavaScript -->
+        </div>
+    </div>
+</body>
+<script src="js/form.js"></script>
+<script src="js/main.js"></script>
+<script src="js/catalogo.js"></script>
+</html>

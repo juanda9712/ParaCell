@@ -1,0 +1,5 @@
+/* css/styles.css */
+/* Aquí irán estilos específicos que no cubramos con Tailwind o personalizaciones de scrollbars */
+html {
+    scroll-behavior: smooth;
+}
